@@ -21,6 +21,35 @@ export async function proxy(request: NextRequest) {
 
   if (PUBLIC_EXACT.has(path)) return NextResponse.next()
 
+  // Superficie de hogares con cuenta: sin sesión → /ingresar (y vuelve). Un pedido ajeno → 404 real.
+  // Las páginas vuelven a verificar todo en el servidor (requireHogar / getPedidoDeHogar).
+  if (path === '/mis-pedidos' || path === '/completar-datos' || path === '/pedido' || path.startsWith('/pedido/')) {
+    try {
+      const session = await auth.api.getSession({ headers: request.headers })
+      if (!session?.user) {
+        const login = new URL('/ingresar', request.url)
+        login.searchParams.set('next', path + request.nextUrl.search)
+        return NextResponse.redirect(login)
+      }
+      if (path === '/pedido/nuevo') {
+        const perfil = await q1(`SELECT 1 FROM perfil_hogar WHERE user_id = $1`, [session.user.id])
+        if (!perfil) {
+          const completar = new URL('/completar-datos', request.url)
+          completar.searchParams.set('next', path + request.nextUrl.search)
+          return NextResponse.redirect(completar)
+        }
+      } else if (path.startsWith('/pedido/')) {
+        const id = path.slice('/pedido/'.length)
+        const own = /^[0-9a-f-]{36}$/i.test(id) ? await q1(`SELECT 1 FROM pedido WHERE id = $1 AND cliente_user_id = $2`, [id, session.user.id]) : null
+        if (!own) return notFoundResponse(request)
+      }
+      return NextResponse.next()
+    } catch (error) {
+      console.error('[proxy] error verificando hogar', error)
+      return NextResponse.next()
+    }
+  }
+
   try {
     // Alta por link: el token tiene que existir y estar vigente (o tener una solicitud en curso).
     if (path.startsWith('/empresa/alta/')) {
@@ -60,5 +89,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/empresa', '/empresa/:path*', '/plataforma', '/plataforma/:path*'],
+  matcher: ['/empresa', '/empresa/:path*', '/plataforma', '/plataforma/:path*', '/mis-pedidos', '/completar-datos', '/pedido/:path*'],
 }
