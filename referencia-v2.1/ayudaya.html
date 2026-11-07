@@ -1,0 +1,831 @@
+<title>AyudaYa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: una sola columna de lectura; el tarifario por rubro y el formulario de pedido son el centro de la página. */
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --sunk:#E8EDF2;
+  --ink:#13233A; --muted:#5A6B80; --line:#D6DEE6;
+  --accent:#D2510D; --accent-ink:#B4440A; --on-accent:#FFFFFF;
+  --ok:#0E8262; --ok-soft:#DFF2EB;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1520; --surface:#152030; --sunk:#1B2839;
+  --ink:#E7EDF4; --muted:#95A5B9; --line:#26354A;
+  --accent:#FF7B36; --accent-ink:#FF9459; --on-accent:#1A0E06;
+  --ok:#47C99F; --ok-soft:#173A30; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1520; --surface:#152030; --sunk:#1B2839;
+  --ink:#E7EDF4; --muted:#95A5B9; --line:#26354A;
+  --accent:#FF7B36; --accent-ink:#FF9459; --on-accent:#1A0E06;
+  --ok:#47C99F; --ok-soft:#173A30; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-stretch:85%;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:clamp(28px,4.4vw,40px);font-weight:800}
+h3{font-size:20px;font-weight:700}
+p{margin:0}
+a{color:inherit}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lead{color:var(--muted);max-width:60ch}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* Header */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.logo{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.logo b{font-family:var(--display);font-stretch:110%;font-weight:800;font-size:24px;letter-spacing:-.02em}
+.logo b span{color:var(--accent)}
+.logo small{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 15px/1 var(--body);padding:13px 18px;border-radius:10px;border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-sm{padding:10px 14px;font-size:14px}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-block:56px 64px}
+.hero h1{font-size:clamp(38px,6.6vw,68px);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--accent-ink)}
+.hero .lead{margin-top:20px;font-size:18px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 10px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.chip svg{width:14px;height:14px}
+
+/* Orden de trabajo de ejemplo */
+.orden{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 18px 40px -24px rgba(19,35,58,.35);position:relative;min-width:0}
+.orden-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1.5px dashed var(--line);padding-bottom:14px}
+.orden-top .eyebrow b{color:var(--ink)}
+.row{display:flex;justify-content:space-between;gap:16px;padding-block:11px;border-bottom:1px solid var(--line);font-size:15px}
+.row span:first-child{color:var(--muted)}
+.row span:last-child{text-align:right;font-weight:600}
+.total{display:flex;justify-content:space-between;align-items:end;gap:12px;padding-top:16px}
+.total .price{font-family:var(--mono);font-weight:600;font-size:30px;font-variant-numeric:tabular-nums}
+.stamp{position:absolute;top:-14px;right:18px;font-family:var(--display);font-stretch:75%;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);border:2px solid var(--accent-ink);border-radius:6px;padding:4px 8px;background:var(--surface);transform:rotate(3deg)}
+.ejemplo{margin-top:12px;font-size:12px;color:var(--muted)}
+
+section{padding-block:64px;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:12px;margin-bottom:32px}
+
+/* Tarifario */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.tab{font:600 15px/1 var(--body);padding:11px 16px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tarifas{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tarifa{display:grid;grid-template-columns:auto 1fr auto auto;gap:16px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.tarifa:last-child{border-bottom:0}
+.code{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tarifa h3{font-family:var(--body);font-size:16px;font-weight:600;letter-spacing:0;font-stretch:100%}
+.tarifa p{font-size:14px;color:var(--muted);margin-top:2px}
+.tarifa .price{font-family:var(--mono);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fine{font-size:13px;color:var(--muted);margin-top:14px;max-width:70ch}
+
+/* Pasos */
+.pasos{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:p}
+.paso{display:grid;gap:10px;align-content:start}
+.paso::before{counter-increment:p;content:counter(p);font-family:var(--display);font-stretch:75%;font-weight:800;font-size:44px;line-height:1;color:var(--accent-ink)}
+.paso p{color:var(--muted);font-size:15px}
+
+/* Confianza */
+.confianza{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.conf{background:var(--surface);padding:24px;display:grid;gap:8px;align-content:start}
+.conf p{color:var(--muted);font-size:15px}
+
+/* Formulario */
+.pedido{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:16px;min-width:0}
+.field{display:grid;gap:6px;min-width:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{font-size:14px;font-weight:600}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.hint{font-size:13px;color:var(--muted)}
+.error{font-size:13px;color:var(--accent-ink);font-weight:600}
+.aside-list{display:grid;gap:14px;margin-top:24px}
+.aside-list div{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.aside-list svg{flex:none;width:20px;height:20px;color:var(--ok);margin-top:2px}
+.precio-sel{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:14px}
+.precio-sel b{font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
+.resumen{display:grid;gap:14px}
+.resumen pre{font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap;background:var(--sunk);border-radius:10px;padding:14px;margin:0;overflow-x:auto}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.num{font-family:var(--mono);font-weight:600}
+
+/* Prestadores */
+.prestadores{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;border-radius:18px;padding:44px 36px}
+.prestadores ul{margin:16px 0 0;padding-left:18px;display:grid;gap:6px}
+.prestadores .btn-primary{justify-self:start}
+
+/* FAQ */
+details{border-bottom:1px solid var(--line);padding-block:16px}
+summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";font-family:var(--mono);color:var(--muted)}
+details[open] summary::after{content:"–"}
+details p{margin-top:10px;color:var(--muted);max-width:70ch}
+
+/* Asistente */
+.asistente{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:14px;min-width:0}
+.tool-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);border:1.5px solid currentColor;border-radius:999px;padding:4px 9px}
+.ejemplos{display:flex;flex-wrap:wrap;gap:8px}
+.ej{font:500 13px/1.2 var(--body);padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.ej:hover{border-color:var(--ink)}
+.status{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:b 1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.preg{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.preg p{font-weight:600;font-size:15px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:500 14px/1.2 var(--body);padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.sug{border:1.5px solid var(--ink);border-radius:12px;padding:18px;display:grid;gap:10px}
+.sug-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sug h3{font-family:var(--body);font-stretch:100%;font-size:18px;letter-spacing:0}
+.sug .price{font-family:var(--mono);font-weight:600;font-size:22px;font-variant-numeric:tabular-nums}
+.sug p{font-size:15px;color:var(--muted)}
+.alerta{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border:1.5px solid var(--accent);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:500}
+.alerta b{display:block;margin-bottom:2px;color:var(--accent-ink)}
+.fuente{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.file{font-size:14px}
+.file input{padding:8px;background:var(--bg)}
+@media (max-width:860px){.asistente{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.dots i{animation:none;opacity:.8}}
+
+/* Elementos de obra */
+:root{--copper-hi:#F0B48A;--copper:#C46A36;--copper-lo:#7E3F1C;--brass:#C79A3A;--tape-dark:#13233A}
+.sec-head::before{content:"";display:block;width:96px;height:9px;border-radius:2px;margin-bottom:6px;
+  background:linear-gradient(90deg,var(--brass) 0 12px,transparent 12px calc(100% - 12px),var(--brass) calc(100% - 12px)),
+  linear-gradient(180deg,var(--copper-hi),var(--copper) 45%,var(--copper-lo));box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.cinta{height:16px;background:repeating-linear-gradient(-45deg,var(--accent) 0 16px,var(--tape-dark) 16px 32px);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.2)}
+.foto{margin:0;border-radius:12px;overflow:hidden;background:var(--sunk);position:relative}
+.foto img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* Hero con fotos */
+.hero-visual{display:grid;min-width:0}
+.mosaico{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:clamp(300px,34vw,380px)}
+.mosaico .foto:first-child{grid-row:span 2}
+.hero-visual .orden{margin:-56px 20px 0;padding:18px 20px}
+.hero-visual .orden .row{padding-block:9px}
+
+/* Galería */
+.galeria{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.trabajo{display:grid;gap:8px;text-decoration:none;color:inherit}
+.trabajo .foto{aspect-ratio:4/3;max-width:100%}
+.trabajo .foto img{transition:transform .4s ease}
+.trabajo:hover .foto img{transform:scale(1.04)}
+.trabajo-pie{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.trabajo-pie b{font-weight:600}
+.trabajo-pie span{font-family:var(--mono);font-size:12px;color:var(--accent-ink);white-space:nowrap}
+
+/* Tarifario con foto */
+.tarifario{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.rubro-foto{aspect-ratio:3/4;max-width:100%}
+.rubro-foto figcaption{position:absolute;inset:auto 0 0;padding:40px 16px 14px;color:#fff;font-size:14px;font-weight:600;background:linear-gradient(transparent,rgba(10,18,30,.85))}
+
+/* Asistente foto */
+.as-foto{aspect-ratio:16/10;max-width:100%;margin-top:22px}
+.as-foto figcaption{position:absolute;inset:auto 0 0;padding:32px 14px 12px;color:#fff;font-size:14px;background:linear-gradient(transparent,rgba(10,18,30,.8))}
+
+/* Pasos sobre plano técnico */
+#como{background-color:var(--bg);background-image:linear-gradient(color-mix(in srgb,var(--ink) 6%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--ink) 6%,transparent) 1px,transparent 1px);background-size:24px 24px}
+
+/* Prestadores con foto */
+.prestadores{position:relative;overflow:hidden;background:#13233A;color:#F3F5F7;isolation:isolate}
+.prestadores::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(13,21,32,.97) 35%,rgba(13,21,32,.55)),var(--bg-cinturon) center/cover}
+.prestadores .lead{color:#C9D3DE}
+
+@media (max-width:860px){
+  .galeria{grid-template-columns:repeat(2,1fr)}
+  .tarifario{grid-template-columns:1fr}
+  .rubro-foto{aspect-ratio:16/9}
+  .prestadores::before{background:linear-gradient(rgba(13,21,32,.92),rgba(13,21,32,.8)),var(--bg-cinturon) center/cover}
+}
+@media (max-width:560px){
+  .mosaico{height:280px}
+  .hero-visual .orden{margin:-40px 8px 0}
+}
+
+footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:13px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+
+@media (max-width:860px){
+  .hero,.pedido,.prestadores{grid-template-columns:1fr}
+  .hero{padding-block:36px 48px;gap:36px}
+  .pasos{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .logo small{display:none}
+  .confianza,.two,.pasos{grid-template-columns:1fr}
+  .tarifa{grid-template-columns:1fr auto;gap:6px 12px;padding:16px}
+  .tarifa .code{grid-column:1/-1}
+  .tarifa .btn{grid-column:1/-1}
+  .prestadores{padding:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#inicio"><b>Ayuda<span>Ya</span></b><small>Mar del Plata · piloto</small></a>
+    <a class="btn btn-primary btn-sm" href="#pedido">Pedir un servicio</a>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">Plomería · Gas · Electricidad</p>
+      <h1 style="margin-top:14px">Un profesional verificado en tu casa, con <em>precio cerrado</em> antes de que entre.</h1>
+      <p class="lead">Elegí el servicio, mirá cuánto cuesta y pedilo. Te asignamos un plomero, gasista o electricista de confianza en Mar del Plata, con horario confirmado. El precio que aceptás es el que pagás.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#asistente">Contanos qué pasa</a>
+        <a class="btn btn-ghost" href="#servicios">Ver servicios y precios</a>
+      </div>
+      <div class="chips">
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Prestadores verificados</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Sin cargos sorpresa</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Garantía de 30 días</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+    <div class="mosaico">
+      <figure class="foto"><img src="img/plomero-bacha.jpg" alt="Plomero arreglando el desagüe debajo de una bacha"></figure>
+      <figure class="foto"><img src="img/tablero-casco.jpg" alt="Electricista con casco trabajando en un tablero eléctrico"></figure>
+      <figure class="foto"><img src="img/llama-gas.jpg" alt="Hornalla de cocina encendida con llama azul"></figure>
+    </div>
+    <aside class="orden" aria-label="Ejemplo de orden de trabajo">
+      <span class="stamp">Precio cerrado</span>
+      <div class="orden-top">
+        <span class="eyebrow">Orden <b>#AY-0142</b></span>
+        <span class="eyebrow">Hoy</span>
+      </div>
+      <div class="row"><span>Servicio</span><span>Destape de cañería</span></div>
+      <div class="row"><span>Prestador</span><span>Plomero verificado · DNI y referencias</span></div>
+      <div class="row"><span>Llega</span><span>Hoy, entre 16 y 18 h</span></div>
+      <div class="total">
+        <span class="eyebrow">Total a pagar</span>
+        <span class="price">$45.000</span>
+      </div>
+      <p class="ejemplo">Ejemplo de cómo ves tu pedido confirmado.</p>
+    </aside>
+    </div>
+  </div>
+
+  <div class="cinta" aria-hidden="true"></div>
+
+  <section id="trabajos" style="border-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Lo que resolvemos</p>
+        <h2>Los arreglos de todos los días, con gente que sabe</h2>
+      </div>
+      <div class="galeria">
+        <a class="trabajo" href="#servicios" data-rubro="plomeria"><figure class="foto"><img src="img/destapacion.jpg" alt="Plomero destapando una cañería con máquina" loading="lazy"></figure><div class="trabajo-pie"><b>Destapaciones</b><span>desde $45.000</span></div></a>
+        <a class="trabajo" href="#servicios" data-rubro="plomeria"><figure class="foto"><img src="img/llave-sifon.jpg" alt="Llave ajustando el sifón cromado de una bacha" loading="lazy"></figure><div class="trabajo-pie"><b>Sifones y griferías</b><span>desde $28.000</span></div></a>
+        <a class="trabajo" href="#servicios" data-rubro="plomeria"><figure class="foto"><img src="img/llave-cano.jpg" alt="Llave Stillson ajustando un caño" loading="lazy"></figure><div class="trabajo-pie"><b>Pérdidas de agua</b><span>diagnóstico $15.000</span></div></a>
+        <a class="trabajo" href="#servicios" data-rubro="gas"><figure class="foto"><img src="img/llave-gas.jpg" alt="Llave de paso de gas amarilla sobre caño de cobre" loading="lazy"></figure><div class="trabajo-pie"><b>Gas y calefones</b><span>desde $18.000</span></div></a>
+        <a class="trabajo" href="#servicios" data-rubro="electricidad"><figure class="foto"><img src="img/tomacorriente.jpg" alt="Electricista colocando un tomacorriente en la pared" loading="lazy"></figure><div class="trabajo-pie"><b>Tomacorrientes y llaves</b><span>desde $18.000</span></div></a>
+        <a class="trabajo" href="#servicios" data-rubro="electricidad"><figure class="foto"><img src="img/electricista-chaleco.jpg" alt="Electricista con chaleco revisando un medidor" loading="lazy"></figure><div class="trabajo-pie"><b>Tableros y térmicas</b><span>desde $35.000</span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="asistente">
+    <div class="wrap asistente">
+      <div class="sec-head" style="margin-bottom:0">
+        <p class="eyebrow">Asistente AyudaYa</p>
+        <h2>¿No sabés qué servicio pedir? Contanos qué pasa</h2>
+        <p class="lead">Describí el problema con tus palabras. El asistente te hace un par de preguntas y te sugiere el servicio del tarifario con su precio. Vos decidís si lo pedís o elegís otro.</p>
+        <p class="hint">Si ya sabés lo que necesitás, elegilo directo en el <a href="#servicios">tarifario</a>.</p>
+        <figure class="foto as-foto"><img src="img/herramientas-piso.jpg" alt="Llave Stillson, caños y conexiones de plomería sobre el piso" loading="lazy"><figcaption>Contalo como se lo contarías al plomero.</figcaption></figure>
+      </div>
+
+      <div class="tool" aria-live="polite">
+        <div class="tool-head">
+          <span class="badge">Asistente con IA</span>
+          <span class="hint">Te sugiere, no decide</span>
+        </div>
+
+        <div id="as-inicio" style="display:grid;gap:14px">
+          <div class="field">
+            <label for="as-input">¿Qué está pasando en tu casa?</label>
+            <textarea id="as-input" placeholder="Ej.: la pileta de la cocina no traga y el agua sube cuando uso el lavarropas"></textarea>
+          </div>
+          <div class="ejemplos" aria-label="Ejemplos">
+            <button class="ej" type="button">Gotea la canilla del baño</button>
+            <button class="ej" type="button">Salta la térmica cuando prendo el horno</button>
+            <button class="ej" type="button">El calefón no prende</button>
+            <button class="ej" type="button">Siento olor a gas en la cocina</button>
+          </div>
+          <div class="field file" id="as-foto-wrap" hidden>
+            <label for="as-foto">Sumá una foto (opcional)</label>
+            <input id="as-foto" type="file">
+          </div>
+          <p class="error" id="as-err" hidden>Contanos el problema en una o dos frases.</p>
+          <button class="btn btn-primary" type="button" id="as-go">Analizar mi problema</button>
+        </div>
+
+        <div class="status" id="as-status" hidden><span class="dots"><i></i><i></i><i></i></span><span id="as-status-txt">Analizando tu problema…</span><button class="btn btn-ghost btn-sm" type="button" id="as-stop">Cancelar</button></div>
+
+        <div id="as-preguntas" hidden style="display:grid;gap:14px">
+          <p class="hint">Para elegir bien el servicio, respondé estas preguntas.</p>
+          <div id="as-preg-list" style="display:grid;gap:14px"></div>
+          <div class="actions">
+            <button class="btn btn-primary" type="button" id="as-responder">Ver sugerencia</button>
+            <button class="btn btn-ghost" type="button" id="as-saltar">Saltear preguntas</button>
+          </div>
+        </div>
+
+        <div id="as-result" hidden style="display:grid;gap:14px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Tarifario del piloto</p>
+        <h2>Elegí el servicio y conocé el precio</h2>
+        <p class="lead">Precios de mano de obra para los trabajos más pedidos. Si tu problema no está en la lista, pedí una visita de diagnóstico.</p>
+      </div>
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="tarifario">
+        <figure class="foto rubro-foto"><img id="rubro-img" src="img/manos-valvula.jpg" alt=""><figcaption id="rubro-note"></figcaption></figure>
+        <div class="tarifas" id="tarifas" role="tabpanel"></div>
+      </div>
+      <p class="fine">Si el trabajo necesita materiales o es más grande de lo previsto, el prestador te pasa un presupuesto por la plataforma y lo aprobás antes de empezar. Ese monto aprobado es el precio final.</p>
+    </div>
+  </section>
+
+  <section id="como">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Cómo funciona</p>
+        <h2>De la pérdida al arreglo, en cuatro pasos</h2>
+      </div>
+      <div class="pasos">
+        <div class="paso"><h3>Elegís el servicio</h3><p>Lo elegís del tarifario o le contás el problema al asistente para que te sugiera uno. Ves el precio antes de pedir.</p></div>
+        <div class="paso"><h3>Te asignamos un prestador</h3><p>Buscamos un profesional verificado de tu zona y te confirmamos día y franja horaria.</p></div>
+        <div class="paso"><h3>Conocés quién va</h3><p>Antes de la visita recibís su nombre, foto, matrícula cuando corresponde y las opiniones de otros clientes.</p></div>
+        <div class="paso"><h3>Pagás y calificás</h3><p>Pagás el precio acordado con Mercado Pago o transferencia y calificás el trabajo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Por qué AyudaYa</p>
+        <h2>Lo que nadie te asegura cuando llamás a alguien que no conocés</h2>
+      </div>
+      <div class="confianza">
+        <div class="conf"><h3>Sabés quién entra a tu casa</h3><p>Cada prestador pasa una verificación: DNI, matrícula para gas y electricidad, y referencias de trabajos anteriores.</p></div>
+        <div class="conf"><h3>El precio no cambia al final</h3><p>Publicamos el precio antes de que pidas. Cualquier extra se aprueba antes de empezar, nunca después.</p></div>
+        <div class="conf"><h3>Respuesta en el día</h3><p>Coordinamos el horario apenas recibimos tu pedido, en lugar de esperar días a que alguien conteste.</p></div>
+        <div class="conf"><h3>Si algo falla, vuelve</h3><p>Si el arreglo falla dentro de los 30 días, el prestador vuelve sin costo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pedido">
+    <div class="wrap pedido">
+      <div>
+        <p class="eyebrow">Pedí tu servicio</p>
+        <h2 style="margin-top:12px">Contanos qué pasa y te confirmamos el horario</h2>
+        <p class="lead" style="margin-top:14px">Completá el pedido y envialo por WhatsApp. Te respondemos con el prestador asignado y la franja horaria.</p>
+        <div class="aside-list">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>No pagás nada hasta que el trabajo esté hecho.</span></div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Atendemos de lunes a sábado, de 8 a 20 h.</span></div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Para una pérdida de gas, cerrá la llave general, ventilá y llamá a la guardia de emergencias de Camuzzi antes de pedir.</span></div>
+        </div>
+      </div>
+
+      <form id="form" novalidate>
+        <div id="form-fields" style="display:grid;gap:16px">
+          <div class="field">
+            <label for="servicio">Servicio</label>
+            <select id="servicio" required></select>
+          </div>
+          <div class="precio-sel" id="precio-sel"><span>Precio cerrado</span><b id="precio-val">—</b></div>
+          <div class="field">
+            <label for="problema">¿Qué está pasando?</label>
+            <textarea id="problema" placeholder="Ej.: pierde agua debajo de la bacha de la cocina desde ayer" required></textarea>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="barrio">Barrio</label>
+              <input id="barrio" placeholder="Ej.: La Perla" required>
+            </div>
+            <div class="field">
+              <label for="direccion">Dirección</label>
+              <input id="direccion" placeholder="Calle y número" required>
+            </div>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="dia">Día</label>
+              <select id="dia"><option>Lo antes posible</option><option>Hoy</option><option>Mañana</option><option>Esta semana</option></select>
+            </div>
+            <div class="field">
+              <label for="franja">Franja horaria</label>
+              <select id="franja"><option>Mañana (8 a 12 h)</option><option>Tarde (12 a 16 h)</option><option>Tarde (16 a 20 h)</option><option>Cualquier horario</option></select>
+            </div>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="nombre">Tu nombre</label>
+              <input id="nombre" autocomplete="given-name" required>
+            </div>
+            <div class="field">
+              <label for="telefono">Celular</label>
+              <input id="telefono" type="tel" inputmode="tel" placeholder="223 …" autocomplete="tel" required>
+            </div>
+          </div>
+          <p class="error" id="form-error" hidden>Completá todos los campos para enviar el pedido.</p>
+          <button class="btn btn-primary" type="submit">Revisar mi pedido</button>
+          <p class="hint">Usamos tus datos solo para coordinar este servicio.</p>
+        </div>
+
+        <div class="resumen" id="resumen" hidden>
+          <h3>Tu pedido está listo</h3>
+          <p class="hint">Envialo por WhatsApp al <span class="num" id="wa-num"></span>. Si el botón no abre WhatsApp, copiá el texto y mandalo a ese número.</p>
+          <pre id="resumen-txt"></pre>
+          <div class="actions">
+            <a class="btn btn-primary" id="wa-link" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+            <button class="btn btn-ghost" type="button" id="copiar">Copiar texto</button>
+            <button class="btn btn-ghost" type="button" id="editar">Editar pedido</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="prestadores">
+    <div class="wrap">
+      <div class="prestadores" style="--bg-cinturon:url(img/cinturon.jpg)">
+        <div>
+          <p class="eyebrow" style="color:inherit;opacity:.7">Para prestadores</p>
+          <h2 style="margin-top:12px">¿Sos plomero, gasista o electricista en Mar del Plata?</h2>
+          <p class="lead" style="margin-top:14px">Sumate al piloto y recibí trabajos de tu zona sin gastar en publicidad.</p>
+          <ul>
+            <li>Vos elegís qué pedidos tomar.</li>
+            <li>Cobrás el precio publicado; AyudaYa se queda con una comisión del 15% solo por los trabajos que hacés.</li>
+            <li>Tus calificaciones te consiguen más clientes.</li>
+          </ul>
+        </div>
+        <a class="btn btn-primary" id="wa-prestador" href="#" target="_blank" rel="noopener">Quiero sumarme</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="preguntas">
+    <div class="wrap">
+      <div class="sec-head"><p class="eyebrow">Preguntas frecuentes</p><h2>Antes de pedir</h2></div>
+      <details><summary>¿El precio puede cambiar?</summary><p>No sin tu aprobación. El precio publicado es el final para ese trabajo. Si el prestador encuentra algo más, te manda un presupuesto por la plataforma y decidís si seguir antes de que empiece.</p></details>
+      <details><summary>¿Cómo pago?</summary><p>Cuando el trabajo está terminado, pagás con Mercado Pago o transferencia. No hace falta pagar por adelantado.</p></details>
+      <details><summary>¿En qué zonas atienden?</summary><p>Estamos en etapa piloto en una zona de Mar del Plata. Si tu barrio todavía no está cubierto, te avisamos al recibir el pedido.</p></details>
+      <details><summary>¿Quiénes son los prestadores?</summary><p>Profesionales independientes que seleccionamos por experiencia y responsabilidad. Verificamos su identidad, su matrícula cuando el trabajo la exige y sus referencias.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>AyudaYa · Servicios para el hogar en Mar del Plata</span>
+    <span>Piloto 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Número de WhatsApp de AyudaYa (formato internacional, sin + ni espacios).
+  var WA = "5492230000000";
+  var WA_TXT = "+54 9 223 000-0000";
+
+  var RUBROS = [
+    {id:"plomeria", nombre:"Plomería", nota:"Plomeros con experiencia comprobable.", foto:"img/manos-valvula.jpg", alt:"Manos de un plomero ajustando una válvula de agua", items:[
+      ["PL-01","Visita de diagnóstico","Revisión del problema y presupuesto si hace falta más trabajo.",15000],
+      ["PL-02","Cambio de canilla o grifería","Mano de obra. La grifería la ponés vos o la cotizamos aparte.",28000],
+      ["PL-03","Reparación de depósito de inodoro","Pérdidas, flotante o descarga que no corta.",30000],
+      ["PL-04","Destape de cañería","Cocina, baño o desagüe pluvial.",45000]
+    ]},
+    {id:"gas", nombre:"Gas", nota:"Solo gasistas matriculados.", foto:"img/llama-gas.jpg", alt:"Hornalla encendida con llama azul", items:[
+      ["GA-01","Visita de diagnóstico","Revisión de artefactos e instalación.",18000],
+      ["GA-02","Service de calefactor o estufa","Limpieza, regulación y control de llama.",40000],
+      ["GA-03","Detección de pérdida y prueba de hermeticidad","Con informe del resultado.",55000],
+      ["GA-04","Cambio de calefón o termotanque","Mano de obra de instalación del equipo.",85000]
+    ]},
+    {id:"electricidad", nombre:"Electricidad", nota:"Electricistas matriculados para instalaciones.", foto:"img/tablero-casco.jpg", alt:"Electricista trabajando en un tablero eléctrico", items:[
+      ["EL-01","Visita de diagnóstico","Revisión del tablero y del circuito.",15000],
+      ["EL-02","Colocación o cambio de tomacorriente o llave","Por unidad.",18000],
+      ["EL-03","Corte de luz o disyuntor que salta","Búsqueda y reparación de la falla.",35000],
+      ["EL-04","Instalación de ventilador de techo","Con el cableado ya existente.",45000]
+    ]}
+  ];
+
+  var fmt = function(n){ return "$" + n.toLocaleString("es-AR"); };
+  var all = {};
+  RUBROS.forEach(function(r){ r.items.forEach(function(it){ all[it[0]] = {rubro:r.nombre, nombre:it[1], precio:it[3]}; }); });
+
+  var tabs = document.getElementById("tabs"), list = document.getElementById("tarifas"), note = document.getElementById("rubro-note");
+  var sel = document.getElementById("servicio"), precio = document.getElementById("precio-val");
+
+  function render(id){
+    var r = RUBROS.filter(function(x){ return x.id === id; })[0];
+    Array.prototype.forEach.call(tabs.children, function(b){ b.setAttribute("aria-selected", b.dataset.id === id); });
+    note.textContent = r.nota;
+    var ri = document.getElementById("rubro-img"); ri.src = r.foto; ri.alt = r.alt;
+    list.innerHTML = "";
+    r.items.forEach(function(it){
+      var row = document.createElement("div"); row.className = "tarifa";
+      row.innerHTML = '<span class="code"></span><div><h3></h3><p></p></div><span class="price"></span><button class="btn btn-ghost btn-sm" type="button">Pedir</button>';
+      row.querySelector(".code").textContent = it[0];
+      row.querySelector("h3").textContent = it[1];
+      row.querySelector("p").textContent = it[2];
+      row.querySelector(".price").textContent = fmt(it[3]);
+      row.querySelector("button").addEventListener("click", function(){
+        sel.value = it[0]; updatePrecio();
+        document.getElementById("pedido").scrollIntoView({behavior:"smooth"});
+        setTimeout(function(){ document.getElementById("problema").focus({preventScroll:true}); }, 400);
+      });
+      list.appendChild(row);
+    });
+  }
+
+  RUBROS.forEach(function(r, i){
+    var b = document.createElement("button");
+    b.className = "tab"; b.type = "button"; b.setAttribute("role","tab"); b.dataset.id = r.id; b.textContent = r.nombre;
+    b.addEventListener("click", function(){ render(r.id); });
+    tabs.appendChild(b);
+    var g = document.createElement("optgroup"); g.label = r.nombre;
+    r.items.forEach(function(it){ var o = document.createElement("option"); o.value = it[0]; o.textContent = it[1] + " · " + fmt(it[3]); g.appendChild(o); });
+    sel.appendChild(g);
+  });
+  render("plomeria");
+  Array.prototype.forEach.call(document.querySelectorAll(".trabajo"), function(a){
+    a.addEventListener("click", function(){ render(a.dataset.rubro); });
+  });
+
+  function updatePrecio(){ var s = all[sel.value]; precio.textContent = s ? fmt(s.precio) : "—"; }
+  sel.addEventListener("change", updatePrecio);
+  sel.value = "PL-04"; updatePrecio();
+
+  var form = document.getElementById("form"), fields = document.getElementById("form-fields"), resumen = document.getElementById("resumen");
+  var err = document.getElementById("form-error"), txt = document.getElementById("resumen-txt");
+  var v = function(id){ return document.getElementById(id).value.trim(); };
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var req = ["problema","barrio","direccion","nombre","telefono"];
+    var falta = req.filter(function(id){ return !v(id); });
+    if (falta.length){ err.hidden = false; document.getElementById(falta[0]).focus(); return; }
+    err.hidden = true;
+    var s = all[sel.value];
+    var msg = "Hola AyudaYa, quiero pedir un servicio.\n\n" +
+      "Servicio: " + s.nombre + " (" + s.rubro + ")\n" +
+      "Precio cerrado: " + fmt(s.precio) + "\n" +
+      "Problema: " + v("problema") + "\n" +
+      "Barrio: " + v("barrio") + "\n" +
+      "Dirección: " + v("direccion") + "\n" +
+      "Cuándo: " + v("dia") + ", " + v("franja") + "\n" +
+      "Nombre: " + v("nombre") + "\n" +
+      "Celular: " + v("telefono");
+    txt.textContent = msg;
+    document.getElementById("wa-link").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(msg);
+    fields.hidden = true; resumen.hidden = false;
+    resumen.querySelector("h3").focus && resumen.querySelector("h3").setAttribute("tabindex","-1");
+    resumen.querySelector("h3").focus();
+  });
+
+  document.getElementById("editar").addEventListener("click", function(){ resumen.hidden = true; fields.hidden = false; });
+
+  var copiar = document.getElementById("copiar");
+  copiar.addEventListener("click", function(){
+    var done = function(){ copiar.textContent = "Copiado"; setTimeout(function(){ copiar.textContent = "Copiar texto"; }, 1800); };
+    var fallback = function(){ var r = document.createRange(); r.selectNodeContents(txt); var s = getSelection(); s.removeAllRanges(); s.addRange(r); copiar.textContent = "Texto seleccionado"; };
+    try { navigator.clipboard.writeText(txt.textContent).then(done, fallback); } catch(e){ fallback(); }
+  });
+
+  document.getElementById("wa-num").textContent = WA_TXT;
+  document.getElementById("wa-prestador").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola AyudaYa, soy prestador y quiero sumarme al piloto. Mi oficio es: ");
+
+  /* ---------- Asistente ---------- */
+  var $ = function(id){ return document.getElementById(id); };
+  var asInicio = $("as-inicio"), asInput = $("as-input"), asStatus = $("as-status"), asStatusTxt = $("as-status-txt");
+  var asPreg = $("as-preguntas"), asPregList = $("as-preg-list"), asResult = $("as-result"), asErr = $("as-err");
+  var fotoWrap = $("as-foto-wrap"), fotoIn = $("as-foto");
+  var asState = { desc:"", preguntas:[], respuestas:[], ctl:null, run:0 };
+  var sampleFn = null, aiOff = false;
+
+  var sampleP = (window.claude && typeof window.claude.use === "function")
+    ? window.claude.use("sample").catch(function(){ return null; })
+    : Promise.resolve(null);
+  sampleP.then(function(s){
+    sampleFn = s;
+    if (s && s.limits) s.limits().then(function(l){
+      if (l && l.images){ fotoWrap.hidden = false; fotoIn.accept = l.images.mediaTypes.join(","); }
+    }).catch(function(){});
+  });
+  function getSample(){
+    if (aiOff) return Promise.resolve(null);
+    return Promise.race([sampleP, new Promise(function(r){ setTimeout(function(){ r(null); }, 3000); })]);
+  }
+
+  var norm = function(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+  var REGLAS = [
+    [/olor a gas|huele a gas|perdida de gas|fuga de gas|escape de gas/, "GA-03"],
+    [/(cambi|instal|nuevo|coloc)[a-z]* .*(calefon|termotanque)|(calefon|termotanque).*(cambi|instal|nuevo)/, "GA-04"],
+    [/calefactor|estufa|tiro balanceado/, "GA-02"],
+    [/calefon|termotanque|hornalla|horno a gas|\bgas\b|piloto/, "GA-01"],
+    [/disyuntor|termica|salta|corte de luz|sin luz|se corta la luz|se fue la luz/, "EL-03"],
+    [/enchufe|tomacorriente|toma corriente|llave de luz|interruptor|tecla de luz/, "EL-02"],
+    [/ventilador/, "EL-04"],
+    [/\bluz\b|cable|electric|chispa|lampara|foco/, "EL-01"],
+    [/tapad|destap|no traga|no desagota|desagote|desague|cloaca/, "PL-04"],
+    [/canilla|griferia|gotea|monocomando/, "PL-02"],
+    [/inodoro|mochila|deposito|cadena/, "PL-03"],
+    [/agua|perdida|cano|humedad|filtra|gotera|bacha|pileta/, "PL-01"]
+  ];
+  function reglas(texto){
+    var t = norm(texto);
+    for (var i = 0; i < REGLAS.length; i++) if (REGLAS[i][0].test(t)) return REGLAS[i][1];
+    return null;
+  }
+  function riesgo(texto){
+    var t = norm(texto);
+    if (/olor a gas|huele a gas|fuga|escape de gas|perdida de gas/.test(t))
+      return "Cerrá la llave general de gas, abrí puertas y ventanas, no prendas ni apagues luces ni uses fuego, y llamá a la guardia de emergencias de Camuzzi.";
+    if (/chispa|humo|quemad|olor a quemado|se quemo/.test(t))
+      return "Bajá la térmica general y no toques cables ni artefactos hasta que llegue el electricista.";
+    return "";
+  }
+
+  function tarifarioTxt(){
+    var out = [];
+    RUBROS.forEach(function(r){ r.items.forEach(function(it){ out.push(it[0] + " | " + r.nombre + " | " + it[1] + " | " + it[2] + " | " + fmt(it[3])); }); });
+    return out.join("\n");
+  }
+  function prompt(conRespuestas){
+    var p = "Sos el asistente de AyudaYa, una plataforma de Mar del Plata que conecta hogares con plomeros, gasistas y electricistas verificados. " +
+      "Tu tarea es ayudar a la persona a elegir el servicio correcto del tarifario. No sos el profesional: no des instrucciones para que la persona repare algo, solo orientación y consejos básicos de seguridad.\n\n" +
+      "Tarifario (código | rubro | servicio | descripción | precio cerrado):\n" + tarifarioTxt() + "\n\n" +
+      "Reglas:\n" +
+      "- Respondé en español rioplatense, breve y claro, tratando de vos.\n" +
+      (conRespuestas
+        ? "- La persona ya respondió tus preguntas: elegí un servicio sí o sí y devolvé preguntas vacío.\n"
+        : "- Si la descripción alcanza para elegir con confianza, elegí el servicio y devolvé preguntas vacío. Si falta algo importante para elegir, devolvé de 1 a 3 preguntas cortas, cada una con 2 a 4 opciones de respuesta, y servicio null.\n") +
+      "- Si el problema es de un rubro pero no encaja en un servicio específico, elegí la visita de diagnóstico de ese rubro.\n" +
+      "- Si no es de plomería, gas ni electricidad, devolvé servicio null y explicá en resumen que por ahora no cubrimos ese rubro.\n" +
+      "- Si hay riesgo (olor a gas, chispas, humo, cables quemados, agua cerca de la electricidad), urgente true y un consejo de seguridad de una o dos frases.\n\n" +
+      'Respondé solo con este JSON: {"preguntas":[{"pregunta":"...","opciones":["...","..."]}],"servicio":"PL-04","resumen":"una oración, en segunda persona, de lo que entendiste","por_que":"una oración de por qué ese servicio","urgente":false,"seguridad":""}\n\n' +
+      "Descripción de la persona: " + asState.desc;
+    if (conRespuestas && asState.respuestas.length){
+      p += "\n\nPreguntas y respuestas:\n" + asState.preguntas.map(function(q, i){ return "- " + q.pregunta + " → " + (asState.respuestas[i] || "No sabe"); }).join("\n");
+    }
+    return p;
+  }
+
+  function show(which){
+    asInicio.hidden = which !== "inicio";
+    asStatus.hidden = which !== "status";
+    asPreg.hidden = which !== "preguntas";
+    asResult.hidden = which !== "result";
+  }
+
+  function analizar(conRespuestas){
+    var s, run = ++asState.run;
+    show("status");
+    asStatusTxt.textContent = conRespuestas ? "Buscando el servicio indicado…" : "Analizando tu problema…";
+    getSample().then(function(fn){
+      s = fn;
+      if (!s) return null;
+      asState.ctl = new AbortController();
+      var opts = { modelTier:"quick", signal: asState.ctl.signal };
+      if (!conRespuestas && fotoIn.files && fotoIn.files[0] && !fotoWrap.hidden) opts.images = [fotoIn.files[0]];
+      return s.json(prompt(conRespuestas), opts);
+    }).then(function(r){
+      if (run !== asState.run) return;
+      if (!r || typeof r !== "object"){ resultado(reglas(asState.desc), null, "reglas"); return; }
+      var preg = Array.isArray(r.preguntas) ? r.preguntas.filter(function(q){ return q && q.pregunta; }).slice(0,3) : [];
+      if (!conRespuestas && preg.length && !all[r.servicio]){ preguntas(preg); return; }
+      resultado(all[r.servicio] ? r.servicio : null, r, "ia");
+    }).catch(function(e){
+      if (run !== asState.run) return;
+      var code = e && e.code;
+      if (code === "cancelled"){ show("inicio"); return; }
+      if (["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].indexOf(code) >= 0) aiOff = true;
+      resultado(reglas(asState.desc), null, "reglas");
+    });
+  }
+
+  function preguntas(lista){
+    asState.preguntas = lista; asState.respuestas = lista.map(function(){ return ""; });
+    asPregList.innerHTML = "";
+    lista.forEach(function(q, i){
+      var box = document.createElement("div"); box.className = "preg";
+      var p = document.createElement("p"); p.textContent = q.pregunta; box.appendChild(p);
+      var opts = document.createElement("div"); opts.className = "opts";
+      (Array.isArray(q.opciones) ? q.opciones.slice(0,4) : []).forEach(function(o){
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = String(o); b.setAttribute("aria-pressed","false");
+        b.addEventListener("click", function(){
+          Array.prototype.forEach.call(opts.children, function(x){ x.setAttribute("aria-pressed","false"); });
+          b.setAttribute("aria-pressed","true"); asState.respuestas[i] = String(o); otra.value = "";
+        });
+        opts.appendChild(b);
+      });
+      box.appendChild(opts);
+      var otra = document.createElement("input"); otra.id = "as-otra-" + i; otra.placeholder = "Otra respuesta";
+      otra.addEventListener("input", function(){
+        if (otra.value.trim()){ Array.prototype.forEach.call(opts.children, function(x){ x.setAttribute("aria-pressed","false"); }); asState.respuestas[i] = otra.value.trim(); }
+      });
+      box.appendChild(otra);
+      asPregList.appendChild(box);
+    });
+    show("preguntas");
+  }
+
+  function resultado(code, r, fuente){
+    var seg = (r && r.seguridad) || riesgo(asState.desc);
+    asResult.innerHTML = "";
+    var add = function(tag, cls, txt){ var el = document.createElement(tag); if (cls) el.className = cls; if (txt != null) el.textContent = txt; return el; };
+
+    if (seg){
+      var al = add("div","alerta"); al.appendChild(add("b",null,"Antes que nada")); al.appendChild(document.createTextNode(seg));
+      asResult.appendChild(al);
+    }
+    if (code){
+      var s = all[code];
+      var card = add("div","sug");
+      var top = add("div","sug-top");
+      top.appendChild(add("span","eyebrow","Te sugerimos · " + code));
+      top.appendChild(add("span","price",fmt(s.precio)));
+      card.appendChild(top);
+      card.appendChild(add("h3",null,s.nombre + " (" + s.rubro + ")"));
+      if (r && r.resumen) card.appendChild(add("p",null,r.resumen));
+      if (r && r.por_que) card.appendChild(add("p",null,r.por_que));
+      if (!r) card.appendChild(add("p",null,"Lo elegimos por las palabras de tu descripción. Revisá que sea lo que necesitás antes de pedirlo."));
+      asResult.appendChild(card);
+    } else {
+      var no = add("div","sug");
+      no.appendChild(add("h3",null, r && r.resumen ? "No encontramos un servicio exacto" : "No pudimos identificar el servicio"));
+      no.appendChild(add("p",null, (r && r.resumen) || "Elegí el servicio en el tarifario o pedí una visita de diagnóstico del rubro que corresponda."));
+      asResult.appendChild(no);
+    }
+    var acts = add("div","actions");
+    if (code){
+      var pedir = add("button","btn btn-primary","Pedir este servicio"); pedir.type = "button";
+      pedir.addEventListener("click", function(){ pedirSugerido(code); });
+      acts.appendChild(pedir);
+    }
+    var otro = add("a","btn btn-ghost","Elegir otro servicio"); otro.href = "#servicios";
+    var reini = add("button","btn btn-ghost","Empezar de nuevo"); reini.type = "button";
+    reini.addEventListener("click", function(){ asInput.value = ""; fotoIn.value = ""; show("inicio"); asInput.focus(); });
+    acts.appendChild(otro); acts.appendChild(reini);
+    asResult.appendChild(acts);
+    asResult.appendChild(add("p","fuente", fuente === "ia" ? "Sugerencia del asistente con IA · revisala antes de pedir" : "Sugerencia automática por palabras clave · revisala antes de pedir"));
+    show("result");
+  }
+
+  function pedirSugerido(code){
+    sel.value = code; updatePrecio();
+    var det = asState.desc;
+    asState.preguntas.forEach(function(q, i){ if (asState.respuestas[i]) det += "\n" + q.pregunta + " " + asState.respuestas[i]; });
+    $("problema").value = det;
+    var rubro = RUBROS.filter(function(r){ return r.items.some(function(it){ return it[0] === code; }); })[0];
+    if (rubro) render(rubro.id);
+    resumen.hidden = true; fields.hidden = false;
+    $("pedido").scrollIntoView({behavior:"smooth"});
+    setTimeout(function(){ $("barrio").focus({preventScroll:true}); }, 450);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".ej"), function(b){
+    b.addEventListener("click", function(){ asInput.value = b.textContent; asInput.focus(); });
+  });
+  $("as-go").addEventListener("click", function(){
+    var d = asInput.value.trim();
+    if (d.length < 6){ asErr.hidden = false; asInput.focus(); return; }
+    asErr.hidden = true;
+    asState.desc = d; asState.preguntas = []; asState.respuestas = [];
+    analizar(false);
+  });
+  $("as-stop").addEventListener("click", function(){ asState.run++; if (asState.ctl) asState.ctl.abort(); show("inicio"); });
+  $("as-responder").addEventListener("click", function(){ analizar(true); });
+  $("as-saltar").addEventListener("click", function(){ asState.respuestas = asState.preguntas.map(function(){ return ""; }); analizar(true); });
+})();
+</script>
