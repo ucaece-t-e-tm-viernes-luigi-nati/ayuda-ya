@@ -1,17 +1,17 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
-  partialPrefetching: true,
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
+  poweredByHeader: false,
+  async headers() {
+    // Las superficies internas no se indexan (además de robots.txt y metadata.robots).
+    return [
+      { source: '/empresa/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+      { source: '/empresa', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+      { source: '/plataforma/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+      { source: '/plataforma', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+    ]
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

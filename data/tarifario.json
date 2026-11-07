@@ -1,0 +1,14 @@
+[
+  { "codigo": "PL-01", "rubro": "plomeria", "nombre": "Visita de diagnóstico", "descripcion": "Revisión del problema y presupuesto si hace falta más trabajo.", "precio": 15000 },
+  { "codigo": "PL-02", "rubro": "plomeria", "nombre": "Cambio de canilla o grifería", "descripcion": "Mano de obra. La grifería la ponés vos o la cotizamos aparte.", "precio": 28000 },
+  { "codigo": "PL-03", "rubro": "plomeria", "nombre": "Reparación de depósito de inodoro", "descripcion": "Pérdidas, flotante o descarga que no corta.", "precio": 30000 },
+  { "codigo": "PL-04", "rubro": "plomeria", "nombre": "Destape de cañería", "descripcion": "Cocina, baño o desagüe pluvial.", "precio": 45000 },
+  { "codigo": "GA-01", "rubro": "gas", "nombre": "Visita de diagnóstico", "descripcion": "Revisión de artefactos e instalación.", "precio": 18000 },
+  { "codigo": "GA-02", "rubro": "gas", "nombre": "Service de calefactor o estufa", "descripcion": "Limpieza, regulación y control de llama.", "precio": 40000 },
+  { "codigo": "GA-03", "rubro": "gas", "nombre": "Detección de pérdida y prueba de hermeticidad", "descripcion": "Con informe del resultado.", "precio": 55000 },
+  { "codigo": "GA-04", "rubro": "gas", "nombre": "Cambio de calefón o termotanque", "descripcion": "Mano de obra de instalación del equipo.", "precio": 85000 },
+  { "codigo": "EL-01", "rubro": "electricidad", "nombre": "Visita de diagnóstico", "descripcion": "Revisión del tablero y del circuito.", "precio": 15000 },
+  { "codigo": "EL-02", "rubro": "electricidad", "nombre": "Colocación o cambio de tomacorriente o llave", "descripcion": "Por unidad.", "precio": 18000 },
+  { "codigo": "EL-03", "rubro": "electricidad", "nombre": "Corte de luz o disyuntor que salta", "descripcion": "Búsqueda y reparación de la falla.", "precio": 35000 },
+  { "codigo": "EL-04", "rubro": "electricidad", "nombre": "Instalación de ventilador de techo", "descripcion": "Con el cableado ya existente.", "precio": 45000 }
+]
