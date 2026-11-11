@@ -4,7 +4,7 @@ MVP de **AyudaYa** · Taller Emprendedor · Universidad CAECE (Mar del Plata) ·
 
 AyudaYa conecta hogares de **Mar del Plata** con **plomeros, gasistas y electricistas verificados**, a **precio cerrado** según un tarifario público. El cliente **no paga comisión ni recargo**: AyudaYa cobra una **comisión del 15% al prestador** solo por los trabajos terminados.
 
-- **App publicada:** https://ayuda-ya-gamma.vercel.app
+- **App publicada:** https://ayudaya-lat.vercel.app
 - **Landing del curso:** https://ucaece-t-e-tm-viernes-luigi-nati.github.io/landing/
 - **Docentes:** Luis Miguel Orviz y Natalia Tonon García
 - **Historia:** la entrega v2.1 del equipo (HTML + Next.js con Supabase) quedó en el historial de git (tag `v2.1`). La v2.2 (tag `v2.2`) la reemplaza por Neon + roles + onboarding de prestadores.
